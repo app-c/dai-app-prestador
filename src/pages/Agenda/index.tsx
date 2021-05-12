@@ -4,7 +4,7 @@ import { Fonts } from '../utils'
 import {Fontisto as Icon, Feather} from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text } from 'react-native'
-import {api} from '../../services/api'
+import {api, socket} from '../../services/api'
 import { Container, AgendaView, List, Descript, FootContainer, Iconcontainer, Title, ContainerAgenda, ContainerElement, Avatar, ContainerText, ContainerAvatart, PropsText } from './styles'
 import { format } from 'date-fns'
 
@@ -27,11 +27,14 @@ const Agenda: React.FC = () => {
    const [agenda, setAgenda] = useState<Response[]>([])
 
    useEffect(() => {
+      
       api.get('/agendamento/me/prestador')
       .then((h) => setAgenda(h.data))
+   }, [api])
+
+   useEffect(() => {
+
    }, [])
-
-
 
    const navigateToHome = useCallback(() => {
       navigate('DashBoard')
@@ -42,7 +45,7 @@ const Agenda: React.FC = () => {
    }, [])
 
    const navigateToService = useCallback(() => {
-      console.log('ok')
+      navigate('Serviço')
    }, [])
 
    const fonstsLoadd = Fonts()
