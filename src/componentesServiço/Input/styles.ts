@@ -12,11 +12,10 @@ export const Container = styled.View<ContainerProps>`
     width: 100%;
     height: 48px;
     padding: 0 16px;
-    background: ${cores.roxo};
+    background: ${cores.branco};
     border-radius: 15px;
     border-width: 2px;
     margin-bottom: 10px;
-    opacity: 0.3;
 
     border-color: ${cores.roxo};
 

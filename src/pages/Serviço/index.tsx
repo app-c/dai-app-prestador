@@ -52,7 +52,7 @@ export const Serviço:React.FC = () => {
             });
 
             Alert.alert(
-               'Serviç realizado com sucesso!',
+               'Serviço realizado com sucesso!',
             );
 
             goBack();
@@ -64,7 +64,7 @@ export const Serviço:React.FC = () => {
                return;
             }
             Alert.alert(
-               'Erro ao cadastrar um novo serviço',
+               'Erro ao cadastrar um novo serviço', err.message
             );
          }
       },

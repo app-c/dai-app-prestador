@@ -80,31 +80,43 @@ const DashBoard: React.FC = () => {
       navigate('Serviço')
    }, [navigate])
 
+   const handleSoket = useMemo(() => {
+      socket.on('agenda', (newAgenda: Response) => {
+         setAppoitment([newAgenda, ...appointment])
+      } )
 
+      socket.on('delet', (del: string) => {
+         const de =  appointment.filter((h) => {
+            return h.id !== del
+         })
 
+         setAppoitment(de)
+      })
+   }, [appointment])
 
-
-   // useEffect(() => {
-   //    socket.on('agenda', (newAgenda: Response) => {
-   //       setAppoitment([newAgenda, ...appointment])
-   //    })
-
-   // }, [appointment])
-
-   console.log(appointment)
    
    useEffect(() => {
+      handleSoket
       api.get('/agendamento/me/prestador',).then((res) => setAppoitment(res.data))
       
    }, [])
 
-   // const nextAgendamento = useMemo(() => {
-   //    return appointment.find((ap) => {
-   //       const hour = getHours(new Date(ap.ano, ap.mes, ap.dia, 0, ap.from, 0))
-   //       const hourNow = getHours(new Date())
-   //       return hour > hourNow
-   //    })
-   // }, [appointment])
+   const nextAgendamento = useMemo(() => {
+      return appointment.find((ap) => {
+         const hour = getHours(new Date(ap.ano, ap.mes, ap.dia, 0, ap.from, 0))
+         const hourNow = getHours(new Date())
+         return hour > hourNow
+      })
+   }, [appointment])
+
+   const afterAgendamento = useMemo(() => {
+      return appointment.filter((h) => {
+         if(nextAgendamento){
+
+            return h.from > nextAgendamento.from
+         }
+      })
+   }, [])
 
    const fonstsLoadd = Fonts()
    if (!fonstsLoadd){
@@ -141,30 +153,30 @@ const DashBoard: React.FC = () => {
                <DateText style={{fontFamily: 'MontRegular'}} >{dataFormat}</DateText>
                <NextAppointment style={{fontFamily: 'MontBold'}} >Proximo Atendimento</NextAppointment>
                
-               {/* {isToday(data) && nextAgendamento && (
+               {isToday(data) && nextAgendamento && (
                      <BoxFirst>
                         <AvatarContainer>
-                           <AvatarImage source={{uri: `${nextAgendamento?.user.avatar_url}`}} />
+                           <AvatarImage source={{uri: `${nextAgendamento?.avatar}`}} />
                         </AvatarContainer>
                         <ContainerText>
-                           <TextName style={{fontFamily: 'MontBold'}} >{nextAgendamento?.user.name}</TextName>
-                           <TextService style={{fontFamily: 'MontRegular'}} > <Feather name='clock' size={20} /> Horário: {nextAgendamento.from} hs</TextService>
+                           <TextName style={{fontFamily: 'MontBold'}} >{nextAgendamento?.user_name}</TextName>
+                           <TextService style={{fontFamily: 'MontRegular'}} > <Feather name='clock' size={20} /> Horário: {format(new Date(nextAgendamento.ano, nextAgendamento.mes, nextAgendamento.dia, 0, nextAgendamento.from, 0), 'HH:mm')} hs</TextService>
                            <TextService style={{fontFamily: 'MontRegular'}} > <Feather name='clipboard' size={20} /> Serviço: {nextAgendamento.service}</TextService>
                         </ContainerText>
                      </BoxFirst>
-               )} */}
-               {/* {afterAgendamentos.length === 0 && (
+               )}
+               {afterAgendamento.length === 0 && (
                   <SemAgendamentoContainer>
                      <Text style={{
                         fontFamily: 'MontBold',
                         fontSize: 30,
-                     }}>Sem horários</Text>
+                     }}>Sem atendimento {'\n'} para hoje </Text>
                   </SemAgendamentoContainer>
-               )} */}
+               )}
                {appointment.map(agenda => (
                   <BoxSecond key={agenda.id}> 
                      <Feather name='clock' size={25} />
-                     <TextService style={{fontFamily: 'MontBold'}} >{agenda.from}</TextService>
+                     <TextService style={{fontFamily: 'MontBold'}} >{format(new Date(agenda.ano, agenda.mes, agenda.dia, 0, agenda.from, 0), 'HH:mm')}</TextService>
                      <BoxText>
                         <AvatarImag source={{uri: `${agenda.avatar}`}} />
                         <Text style={{

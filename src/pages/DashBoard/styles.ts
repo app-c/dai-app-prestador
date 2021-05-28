@@ -147,7 +147,7 @@ export const BoxText = styled.View`
 `
 
 export const SemAgendamentoContainer = styled.View`
-   flex: 1;
    align-items: center;
-   justify-content: center;
+   margin-top: 70px;
+
 `
