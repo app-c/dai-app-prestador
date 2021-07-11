@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { Feather } from '@expo/vector-icons';
+import React, { useRef, useCallback, useState, useEffect } from "react";
+import { Feather } from "@expo/vector-icons";
 import {
    KeyboardAvoidingView,
    ScrollView,
@@ -9,17 +9,17 @@ import {
    View,
    Button as RNButton,
    StyleSheet,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Form } from '@unform/mobile';
-import { FormHandles } from '@unform/core';
-import * as Yup from 'yup';
-import * as ImagePicker from 'expo-image-picker';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import {api} from '../../services/api';
-import getValidationErrors from '../../utils/getValidationsErrors';
-import { useAuth } from '../../hooks/AuthContext';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Form } from "@unform/mobile";
+import { FormHandles } from "@unform/core";
+import * as Yup from "yup";
+import * as ImagePicker from "expo-image-picker";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
+import { api } from "../../services/api";
+import getValidationErrors from "../../utils/getValidationsErrors";
+import { useAuth } from "../../hooks/AuthContext";
 
 import {
    Container,
@@ -29,24 +29,25 @@ import {
    BackButton,
    Off,
    OffContainer,
-} from './styles';
-import { cores } from '../../utils/ferramentas';
+} from "./styles";
 
 interface ProfileFormData {
-   name: string;
+   nome: string;
    email: string;
    telefone: string;
+   work_init: string;
+   work_and: string;
+   funcao: string;
    old_password: string;
-   password: string;
+   senha: string;
    password_confirmation: string;
 }
 
 const Profile: React.FC = () => {
-   const [image, setImage] = useState<any>();
    const formRef = useRef<FormHandles>(null);
    const navigation = useNavigation();
 
-   const { user, signOut, updateUser } = useAuth();
+   const { prestador, signOut, updateUser } = useAuth();
 
    const logOf = useCallback(() => {
       signOut();
@@ -62,30 +63,33 @@ const Profile: React.FC = () => {
             formRef.current?.setErrors({});
 
             const schme = Yup.object().shape({
-               name: Yup.string().required('nome obrigatoório'),
+               nome: Yup.string().required("nome obrigatoório"),
                email: Yup.string()
-                  .required('emal obrigatorio')
-                  .email('digite um email valido'),
+                  .required("emal obrigatorio")
+                  .email("digite um email valido"),
                telefone: Yup.number()
                   .required()
-                  .min(11, 'digite um telefone valido'),
+                  .min(11, "digite um telefone valido"),
+               work_init: Yup.string().required(),
+               work_and: Yup.string().required(),
+               funcao: Yup.string().required(),
                old_password: Yup.string(),
 
-               password: Yup.string()
+               senha: Yup.string()
                   .ensure()
-                  .when('old_password', {
-                     is: val => !!val.length,
+                  .when("old_password", {
+                     is: (val) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   }),
                password_confirmation: Yup.string()
                   .ensure()
-                  .when('old_password', {
-                     is: val => !!val.length,
+                  .when("old_password", {
+                     is: (val) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   })
-                  .oneOf([Yup.ref('password'), null], 'confirmaçao incorreta'),
+                  .oneOf([Yup.ref("senha"), null], "confirmaçao incorreta"),
             });
 
             await schme.validate(data, {
@@ -93,30 +97,34 @@ const Profile: React.FC = () => {
             });
 
             const {
-               name,
+               nome,
                email,
                telefone,
+               work_init,
+               work_and,
                old_password,
-               password,
+               senha,
                password_confirmation,
             } = data;
 
             const formData = {
-               name,
+               nome,
                email,
+               work_init,
+               work_and,
                telefone,
                ...(old_password
-                  ? { old_password, password, password_confirmation }
+                  ? { old_password, senha, password_confirmation }
                   : {}),
             };
 
-            const response = await api.put('/profile', formData);
+            const response = await api.put("/profile", formData);
 
             updateUser(response.data);
 
             Alert.alert(
-               'Perfil atualizado com sucesso',
-               'seu perfil foi atualizado',
+               "Perfil atualizado com sucesso",
+               "seu perfil foi atualizado"
             );
 
             navigation.goBack();
@@ -128,23 +136,22 @@ const Profile: React.FC = () => {
                return;
             }
             Alert.alert(
-               'Erro no cadastro',
-               'Ocorreu um erro ao tentar fazer o cadastro',
+               "Erro no cadastro",
+               "Ocorreu um erro ao tentar fazer o cadastro"
             );
          }
       },
-      [navigation, updateUser],
+      [navigation, updateUser]
    );
 
    useEffect(() => {
       (async () => {
-         if (Platform.OS !== 'web') {
-            const {
-               status,
-            } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
+         if (Platform.OS !== "web") {
+            const { status } =
+               await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== "granted") {
                Alert.alert(
-                  'Sorry, we need camera roll permissions to make this work!',
+                  "Sorry, we need camera roll permissions to make this work!"
                );
             }
          }
@@ -162,22 +169,26 @@ const Profile: React.FC = () => {
       if (!result.cancelled) {
          const data = new FormData();
 
-         data.append('avatar', {
-            type: 'image/jpg',
-            name: `${user.id}.jpg`,
+         data.append("avatar", {
+            type: "image/jpg",
+            name: `${prestador.id}.jpg`,
             uri: result.uri,
          });
 
-         api.patch('/avatar', data).then(res => {
+         api.patch("/prestador/avatar", data).then((res) => {
             updateUser(res.data);
          });
       }
-   }, [updateUser, user.id]);
+   }, [updateUser, prestador.id]);
+
+   const urlAvatar = "https://dai-nails.s3.us-east-2.amazonaws.com/";
+
+   const tel = `${prestador.telefone}`;
    return (
       <>
          <KeyboardAvoidingView
             style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
             enabled
          >
             <ScrollView keyboardShouldPersistTaps="handled">
@@ -196,7 +207,9 @@ const Profile: React.FC = () => {
                   </OffContainer>
 
                   <UserAvatarButtom onPress={UpdateAvatar}>
-                     <UserAvatar source={{ uri: `${user.avatar_url}` }} />
+                     <UserAvatar
+                        source={{ uri: `${urlAvatar}${prestador.avatar}` }}
+                     />
                   </UserAvatarButtom>
 
                   <View>
@@ -205,16 +218,19 @@ const Profile: React.FC = () => {
 
                   <Form
                      initialData={{
-                        name: user.name,
-                        email: user.email,
-                        telefone: user.telefone,
+                        nome: prestador.nome,
+                        email: prestador.email,
+                        telefone: tel,
+                        work_init: prestador.work_init,
+                        work_and: prestador.work_and,
+                        funcao: prestador.funcao,
                      }}
                      ref={formRef}
                      onSubmit={handleSubmit}
                   >
                      <Input
                         autoCorrect={false}
-                        name="name"
+                        name="nome"
                         icon="user"
                         placeholder="Nome"
                      />
@@ -236,6 +252,20 @@ const Profile: React.FC = () => {
                      />
 
                      <Input
+                        name="work_init"
+                        icon="clock"
+                        placeholder="Início da joranda"
+                     />
+
+                     <Input
+                        name="work_and"
+                        icon="clock"
+                        placeholder="Fim da joranda"
+                     />
+
+                     <Input name="funcao" icon="" placeholder="Sua função" />
+
+                     <Input
                         secureTextEntry
                         containerStyle={{ marginTop: 16 }}
                         name="old_password"
@@ -244,7 +274,7 @@ const Profile: React.FC = () => {
                      />
                      <Input
                         secureTextEntry
-                        name="password"
+                        name="senha"
                         icon="lock"
                         placeholder="Nova senha"
                      />

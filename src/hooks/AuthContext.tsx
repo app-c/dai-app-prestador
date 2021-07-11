@@ -12,28 +12,31 @@ import {api} from '../services/api';
 
 interface User {
    id: string;
-   name: string;
+   nome: string;
    telefone: number;
    email: string;
-   avatar_url: string;
+   work_init: string;
+   work_and: string;
+   funcao: string;
+   avatar: string;
 }
 
 interface SignInCred {
    email: string;
-   password: string;
+   senha: string;
 }
 
 interface AuthContexData {
-   user: User;
+   prestador: User;
    loading: boolean;
    signIn(credential: SignInCred): Promise<void>;
    signOut(): void;
-   updateUser(user: User): Promise<void>;
+   updateUser(prestador: User): Promise<void>;
 }
 
 interface AuthState {
    token: string;
-   user: User;
+   prestador: User;
 }
 
 export const AuthContext = createContext<AuthContexData>({} as AuthContexData);
@@ -44,15 +47,15 @@ export const AuthProvider: React.FC = ({ children }) => {
 
    useEffect(() => {
       async function loadStorageData(): Promise<void> {
-         const [token, user] = await AsyncStorage.multiGet([
-            '@will:token',
-            '@will:user',
+         const [token, prestador] = await AsyncStorage.multiGet([
+            '@wil:token',
+            '@wil:prestador',
          ]);
 
-         if (token[1] && user[1]) {
+         if (token[1] && prestador[1]) {
             api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
-            seData({ token: token[1], user: JSON.parse(user[1]) });
+            seData({ token: token[1], prestador: JSON.parse(prestador[1]) });
          }
          setLoading(false);
       }
@@ -60,37 +63,39 @@ export const AuthProvider: React.FC = ({ children }) => {
       loadStorageData();
    }, []);
 
-   const signIn = useCallback(async ({ email, password }) => {
-      const response = await api.post('/session', {
+   const signIn = useCallback(async ({ email, senha }) => {
+      const response = await api.post('/prestador/session', {
          email,
-         password,
+         senha,
       });
 
-      const { token, user } = response.data;
+      console.log(response.data)
+
+      const { token, prestador } = response.data;
 
       await AsyncStorage.multiSet([
-         ['@will:token', token],
-         ['@will:user', JSON.stringify(user)],
+         ['@wil:token', token],
+         ['@wil:prestador', JSON.stringify(prestador)],
       ]);
 
       api.defaults.headers.authorization = `Bearer ${token}`;
 
-      seData({ token, user });
+      seData({ token, prestador });
    }, []);
 
    const signOut = useCallback(async () => {
-      await AsyncStorage.multiRemove(['@will:user', '@will:token']);
+      await AsyncStorage.multiRemove(['@wil:prestador', '@wil:token']);
 
       seData({} as AuthState);
    }, []);
 
    const updateUser = useCallback(
-      async (user: User) => {
-         await AsyncStorage.setItem('@will:user', JSON.stringify(user));
+      async (prestador: User) => {
+         await AsyncStorage.setItem('@wil:prestador', JSON.stringify(prestador));
 
          seData({
             token: data.token,
-            user,
+            prestador,
          });
       },
       [seData, data.token],
@@ -98,7 +103,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
    return (
       <AuthContext.Provider
-         value={{ user: data.user, loading, signIn, signOut, updateUser }}
+         value={{ prestador: data.prestador, loading, signIn, signOut, updateUser }}
       >
          {children}
       </AuthContext.Provider>

@@ -71,17 +71,18 @@ const Input: React.FC<InputProps> = ({
                 color={isFocused || isFilled ? `${cores.roxo}` : '#6F6F6F'}
             />
             <InputText
-                name={name}
-                ref={inputElementRef}
-                keyboardAppearance="dark"
-                placeholderTextColor="#6F6F6F"
-                onFocus={handleInput}
-                onBlur={handleBlur}
-                defaultValue={defaultValue}
-                onChangeText={value => {
-                    inpuValueRef.current.value = value;
-                }}
-                {...rest}
+               multiline
+               name={name}
+               ref={inputElementRef}
+               keyboardAppearance="dark"
+               placeholderTextColor="#6F6F6F"
+               onFocus={handleInput}
+               onBlur={handleBlur}
+               defaultValue={defaultValue}
+               onChangeText={value => {
+                  inpuValueRef.current.value = value;
+               }}
+               {...rest}
             />
         </Container>
     );

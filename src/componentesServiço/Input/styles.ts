@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components/native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Entypo } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cores } from '../../utils/ferramentas';
 
@@ -10,7 +10,7 @@ interface ContainerProps {
 
 export const Container = styled.View<ContainerProps>`
     width: 100%;
-    height: 48px;
+    /* height: 48px; */
     padding: 0 16px;
     background: ${cores.branco};
     border-radius: 15px;

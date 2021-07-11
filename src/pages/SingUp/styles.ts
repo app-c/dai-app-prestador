@@ -38,3 +38,9 @@ export const Boto = styled.View`
 export const BackText = styled.Text`
     margin-left: 20px;
 `
+
+export const TextInputs = styled.Text`
+   margin-left: 10px;
+   margin-top: 10px;
+   margin-bottom: 10px;
+`
