@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
+import { getMonth } from "date-fns";
+import { getDate } from "date-fns/esm";
 import React, { useCallback, useRef } from "react";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
@@ -25,29 +27,22 @@ const Bloqueio: React.FC = () => {
    const handleBloqueio = useCallback(
       async (data: DataBloqueio) => {
          formRef.current?.setErrors({});
-         console.log(data);
+
+         const diaN = getDate(new Date(2021, 1, data.dia));
+         const mesN = getMonth(new Date(2021, data.mes, 1));
+         console.log(mesN);
 
          const response = await api.post("/service/bloqueio", {
             from: data.from,
             at: data.at,
-            dia: data.dia,
-            mes: data.mes,
+            dia: diaN,
+            mes: mesN,
          });
          console.log(response.data);
       },
       [prestador.id]
    );
 
-   const bl = useCallback(async () => {
-      const response = await api.post("/service/bloqueio", {
-         provider_id: prestador.id,
-         from: "14:00",
-         at: "18:00",
-         dia: 10,
-         mes: 7,
-      });
-      console.log(response.data);
-   }, []);
    return (
       <Container>
          <TextTitle>Bloqueio</TextTitle>

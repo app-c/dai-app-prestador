@@ -1,20 +1,13 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-unused-expressions */
 import { useNavigation } from "@react-navigation/core";
 import AppLoading from "expo-app-loading";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
-import soket from "socket.io-client";
-import prBr, {
-   format,
-   getDate,
-   getDay,
-   getHours,
-   getMonth,
-   getYear,
-   isAfter,
-   isToday,
-} from "date-fns";
+import { ScrollView, Text } from "react-native";
+import prBr, { format, getDate, isToday } from "date-fns";
 
-import { Fontisto as Icon, Feather } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import {
    AvatarContainer,
    AvatarImage,
@@ -25,11 +18,8 @@ import {
    ContainerBody,
    ContainerText,
    DateText,
-   Descript,
-   FootContainer,
    Header,
    HeaderTitle,
-   Iconcontainer,
    Linear,
    NextAppointment,
    ProfileButton,
@@ -38,10 +28,9 @@ import {
    UserAvatar,
    UserName,
    BoxText,
-   SemAgendamentoContainer,
    ContainerAgenda,
 } from "./styles";
-import { convertHours, Fonts } from "../utils";
+import { Fonts } from "../utils";
 import { api, socket } from "../../services/api";
 import { useAuth } from "../../hooks/AuthContext";
 
@@ -121,8 +110,6 @@ const DashBoard: React.FC = () => {
       });
    }, [appointment]);
 
-   console.log(afterAgendamento);
-
    const fonstsLoadd = Fonts();
    if (!fonstsLoadd) {
       return <AppLoading />;
@@ -175,7 +162,9 @@ const DashBoard: React.FC = () => {
                <BoxFirst>
                   <AvatarContainer>
                      <AvatarImage
-                        source={{ uri: `${nextAgendamento.user.avatar}` }}
+                        source={{
+                           uri: `${urlAvatar}${nextAgendamento.user.avatar}`,
+                        }}
                      />
                   </AvatarContainer>
                   <ContainerText>
@@ -239,7 +228,9 @@ const DashBoard: React.FC = () => {
                         </TextService>
                      </ContainerAgenda>
                      <BoxText>
-                        <AvatarImag source={{ uri: `${agenda.user.avatar}` }} />
+                        <AvatarImag
+                           source={{ uri: `${urlAvatar}${agenda.user.avatar}` }}
+                        />
                         <Text
                            style={{
                               marginLeft: 30,

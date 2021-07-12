@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
    createContext,
    useCallback,
    useContext,
    useEffect,
    useState,
-} from 'react';
-import {api} from '../services/api';
+} from "react";
+import { Alert } from "react-native";
+import { api } from "../services/api";
 
 interface User {
    id: string;
@@ -48,8 +49,8 @@ export const AuthProvider: React.FC = ({ children }) => {
    useEffect(() => {
       async function loadStorageData(): Promise<void> {
          const [token, prestador] = await AsyncStorage.multiGet([
-            '@wil:token',
-            '@wil:prestador',
+            "@wil:token",
+            "@wil:prestador",
          ]);
 
          if (token[1] && prestador[1]) {
@@ -64,18 +65,16 @@ export const AuthProvider: React.FC = ({ children }) => {
    }, []);
 
    const signIn = useCallback(async ({ email, senha }) => {
-      const response = await api.post('/prestador/session', {
+      const response = await api.post("/prestador/session", {
          email,
          senha,
       });
 
-      console.log(response.data)
-
       const { token, prestador } = response.data;
 
       await AsyncStorage.multiSet([
-         ['@wil:token', token],
-         ['@wil:prestador', JSON.stringify(prestador)],
+         ["@wil:token", token],
+         ["@wil:prestador", JSON.stringify(prestador)],
       ]);
 
       api.defaults.headers.authorization = `Bearer ${token}`;
@@ -84,26 +83,35 @@ export const AuthProvider: React.FC = ({ children }) => {
    }, []);
 
    const signOut = useCallback(async () => {
-      await AsyncStorage.multiRemove(['@wil:prestador', '@wil:token']);
+      await AsyncStorage.multiRemove(["@wil:prestador", "@wil:token"]);
 
       seData({} as AuthState);
    }, []);
 
    const updateUser = useCallback(
       async (prestador: User) => {
-         await AsyncStorage.setItem('@wil:prestador', JSON.stringify(prestador));
+         await AsyncStorage.setItem(
+            "@wil:prestador",
+            JSON.stringify(prestador)
+         );
 
          seData({
             token: data.token,
             prestador,
          });
       },
-      [seData, data.token],
+      [seData, data.token]
    );
 
    return (
       <AuthContext.Provider
-         value={{ prestador: data.prestador, loading, signIn, signOut, updateUser }}
+         value={{
+            prestador: data.prestador,
+            loading,
+            signIn,
+            signOut,
+            updateUser,
+         }}
       >
          {children}
       </AuthContext.Provider>
@@ -114,7 +122,7 @@ export function useAuth(): AuthContexData {
    const context = useContext(AuthContext);
 
    if (!context) {
-      throw new Error('useAuth must be used with ..');
+      throw new Error("useAuth must be used with ..");
    }
 
    return context;

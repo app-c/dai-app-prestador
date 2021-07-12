@@ -7,8 +7,6 @@ import {
    Platform,
    Alert,
    View,
-   Button as RNButton,
-   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
@@ -46,8 +44,10 @@ interface ProfileFormData {
 const Profile: React.FC = () => {
    const formRef = useRef<FormHandles>(null);
    const navigation = useNavigation();
+   const [avatar, setAvatar] = useState("");
 
    const { prestador, signOut, updateUser } = useAuth();
+   console.log(prestador.avatar);
 
    const logOf = useCallback(() => {
       signOut();
@@ -175,6 +175,8 @@ const Profile: React.FC = () => {
             uri: result.uri,
          });
 
+         setAvatar(result.uri);
+
          api.patch("/prestador/avatar", data).then((res) => {
             updateUser(res.data);
          });
@@ -208,7 +210,9 @@ const Profile: React.FC = () => {
 
                   <UserAvatarButtom onPress={UpdateAvatar}>
                      <UserAvatar
-                        source={{ uri: `${urlAvatar}${prestador.avatar}` }}
+                        source={{
+                           uri: avatar || `${urlAvatar}${prestador.avatar}`,
+                        }}
                      />
                   </UserAvatarButtom>
 

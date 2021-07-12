@@ -44,7 +44,7 @@ const Serviço: React.FC = () => {
                abortEarly: false,
             });
 
-            const res = await api.post("/service", {
+            const res = await api.post("/service/service", {
                provider_id: prestador.id,
                service: data.service,
                description: data.description,

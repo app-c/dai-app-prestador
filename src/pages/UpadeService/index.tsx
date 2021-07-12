@@ -1,7 +1,7 @@
 import AppLoading from "expo-app-loading";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
 import { FormHandles } from "@unform/core";
 import * as Yup from "yup";
@@ -70,7 +70,7 @@ const UpdateService: React.FC = () => {
    );
 
    const handleDelete = useCallback(async (id: string) => {
-      await api.delete(`/service/${id}/delet`);
+      await api.delete(`/prestador/service/${id}/delet`);
 
       setResponse(response.filter((h) => h.id !== id));
 
@@ -82,7 +82,7 @@ const UpdateService: React.FC = () => {
          try {
             formRef.current?.setErrors({});
 
-            const res = await api.patch("/service/update", {
+            const res = await api.patch("/service/service/update", {
                id: serviceId,
                service: data.service,
                description: data.description,
@@ -98,7 +98,7 @@ const UpdateService: React.FC = () => {
                Alert.alert("Erro", message);
             }
 
-            api.get(`/${prestador.id}/list`).then((response) => {
+            api.get(`/service${prestador.id}/list`).then((response) => {
                setResponse(response.data);
             });
          } catch (err) {
@@ -123,17 +123,17 @@ const UpdateService: React.FC = () => {
    const onRefresh = useCallback(() => {
       wait(2000).then(() => {
          setReflesh(false);
-         api.get(`/${prestador.id}/list`).then((response) => {
-            setResponse(response.data);
-         });
+         api.get(`service/${prestador.id}/list`).then((res) =>
+            setResponse(res.data)
+         );
       });
    }, [prestador.id, refleshing]);
 
    useEffect(() => {
-      api.get(`/${prestador.id}/list`).then((response) => {
-         setResponse(response.data);
-      });
-   }, [prestador.id, response]);
+      api.get(`service/${prestador.id}/list`).then((res) =>
+         setResponse(res.data)
+      );
+   }, [refleshing]);
 
    if (!fontsL) {
       return <AppLoading />;

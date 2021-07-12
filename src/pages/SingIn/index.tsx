@@ -21,6 +21,7 @@ import Input from "../../components/Input";
 import { useAuth } from "../../hooks/AuthContext";
 import { Boto } from "../SingUp/styles";
 import getValidationErrors from "../../utils/getValidationsErrors";
+import { api } from "../../services/api";
 
 interface SignInFormData {
    email: string;
@@ -53,6 +54,16 @@ const SingIn: React.FC = () => {
             await schema.validate(data, {
                abortEarly: false,
             });
+            const response = await api.post("/prestador/session", {
+               email: data.email,
+               senha: data.senha,
+            });
+
+            const { message } = response.data;
+
+            if (message) {
+               Alert.alert("Erro", message);
+            }
 
             await signIn({
                email: data.email,
@@ -68,7 +79,6 @@ const SingIn: React.FC = () => {
                "Erro na autenticação",
                "Ocorreu um erro ao fazer login"
             );
-            console.log(err);
          }
       },
       [signIn]

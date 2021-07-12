@@ -6,6 +6,8 @@ import Agenda from "../pages/Agenda";
 import Serviço from "../pages/Serviço";
 import UpdateService from "../pages/UpadeService";
 import Bloqueio from "../pages/Bloqueio";
+import Reserva from "../pages/Reserva";
+import Reservas from "../pages/Reservas";
 
 const Drawer = createDrawerNavigator();
 
@@ -19,7 +21,8 @@ const AppRoutes: React.FC = () => {
             <Drawer.Screen name="Serviço" component={Serviço} />
             <Drawer.Screen name="Atualizar serviço" component={UpdateService} />
             <Drawer.Screen name="Bloqueio" component={Bloqueio} />
-            {/* <Drawer.Screen name='Reserva de horários' component={Reserva} /> */}
+            <Drawer.Screen name="Reserva de horários" component={Reserva} />
+            <Drawer.Screen name="Reservas" component={Reservas} />
          </Drawer.Navigator>
          {/* <Auth.Navigator tabBarOptions={{activeTintColor: '#37144b', adaptive: true}}
          >
