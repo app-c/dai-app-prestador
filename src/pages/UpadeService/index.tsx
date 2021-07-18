@@ -69,13 +69,14 @@ const UpdateService: React.FC = () => {
       []
    );
 
-   const handleDelete = useCallback(async (id: string) => {
-      await api.delete(`/prestador/service/${id}/delet`);
+   const handleDelete = useCallback(
+      async (id: string) => {
+         await api.delete(`/service/service/${id}/delet`);
 
-      setResponse(response.filter((h) => h.id !== id));
-
-      console.log(id);
-   }, []);
+         setResponse(response.filter((h) => h.id !== id));
+      },
+      [response]
+   );
 
    const updateService = useCallback(
       async (data: IData) => {
@@ -133,7 +134,7 @@ const UpdateService: React.FC = () => {
       api.get(`service/${prestador.id}/list`).then((res) =>
          setResponse(res.data)
       );
-   }, [refleshing]);
+   }, [prestador.id, refleshing]);
 
    if (!fontsL) {
       return <AppLoading />;
@@ -142,17 +143,18 @@ const UpdateService: React.FC = () => {
    return (
       <>
          <Container behavior="padding">
-            <Scroll>
+            <Scroll
+               refreshControl={
+                  <RefreshControl
+                     refreshing={refleshing}
+                     onRefresh={onRefresh}
+                  />
+               }
+            >
                <TextTitle>Atualizar os serviços</TextTitle>
 
                <ContainerService>
                   <List
-                     refreshControl={
-                        <RefreshControl
-                           refreshing={refleshing}
-                           onRefresh={onRefresh}
-                        />
-                     }
                      contentContainerStyle={{
                         paddingBottom: 30,
                      }}

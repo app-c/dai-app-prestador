@@ -6,14 +6,20 @@ export const Container = styled.View`
    flex: 1;
    background-color: ${cores.rosa};
    padding: 30px;
+`;
+
+export const ContainerCards = styled.View`
+   align-items: center;
+   justify-content: flex-start;
    flex-direction: row;
-   justify-content: space-between;
+   margin-top: 15px;
 `;
 
 export const Cards = styled(RectButton)`
-   width: 150px;
+   width: 50%;
    height: 100px;
    background-color: ${cores.roxo};
+   margin-right: 15px;
 
    align-items: center;
    justify-content: center;

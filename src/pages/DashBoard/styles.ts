@@ -138,8 +138,11 @@ export const BoxText = styled.View`
    border-radius: 12px;
    margin-left: 10%;
    height: 70px;
-   width: 63%;
+   max-width: 70%;
+   padding-right: 5px;
 `;
+
+export const BoxTextElements = styled.View``;
 
 export const SemAgendamentoContainer = styled.View`
    align-items: center;

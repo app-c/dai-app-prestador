@@ -4,8 +4,10 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as Updates from "expo-updates";
+import AppLoading from "expo-app-loading";
 import AppProvider from "./hooks";
 import Routes from "./routes";
+import { Fonts } from "./pages/utils";
 
 const App: React.FC = () => {
    // useEffect(() => {
@@ -18,6 +20,11 @@ const App: React.FC = () => {
    //    }
    //    updateApp();
    // }, []);
+
+   const fonstsLoadd = Fonts();
+   if (!fonstsLoadd) {
+      return <AppLoading />;
+   }
 
    return (
       <NavigationContainer>

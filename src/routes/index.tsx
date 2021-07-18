@@ -1,22 +1,23 @@
-import React from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { useAuth } from '../hooks/AuthContext'
-import { Colors } from '../pages/utils'
-import AppRoutes from './AppRoutes.routes'
-import AuthRoutes from './auth.routes'
-
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
+import { useAuth } from "../hooks/AuthContext";
+import { Colors } from "../pages/utils";
+import AppRoutes from "./AppRoutes.routes";
+import AuthRoutes from "./auth.routes";
 
 const Routes: React.FC = () => {
-    const {prestador, loading } = useAuth()
+   const { prestador, loading } = useAuth();
 
-    if (loading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <ActivityIndicator size='large' color={Colors.rosa} />
-            </View>
-        )
-    }
-    return prestador ? <AppRoutes /> : <AuthRoutes />
-}
+   if (loading) {
+      return (
+         <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+         >
+            <ActivityIndicator size="large" color={Colors.rosa} />
+         </View>
+      );
+   }
+   return prestador ? <AppRoutes /> : <AuthRoutes />;
+};
 
-export default Routes
+export default Routes;

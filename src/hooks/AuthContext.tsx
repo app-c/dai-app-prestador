@@ -69,6 +69,7 @@ export const AuthProvider: React.FC = ({ children }) => {
          email,
          senha,
       });
+      console.log(response.data);
 
       const { token, prestador } = response.data;
 
