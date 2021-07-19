@@ -47,7 +47,6 @@ const Profile: React.FC = () => {
    const [avatar, setAvatar] = useState("");
 
    const { prestador, signOut, updateUser } = useAuth();
-   console.log(prestador.avatar);
 
    const logOf = useCallback(() => {
       signOut();
@@ -78,14 +77,14 @@ const Profile: React.FC = () => {
                senha: Yup.string()
                   .ensure()
                   .when("old_password", {
-                     is: (val) => !!val.length,
+                     is: (val: string) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   }),
                password_confirmation: Yup.string()
                   .ensure()
                   .when("old_password", {
-                     is: (val) => !!val.length,
+                     is: (val: string) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   })
@@ -118,27 +117,21 @@ const Profile: React.FC = () => {
                   : {}),
             };
 
-            const response = await api.put("/prestador/profile", formData);
-
+            const response = await api.put("/prestador/update", formData);
             updateUser(response.data);
 
             Alert.alert(
                "Perfil atualizado com sucesso",
                "seu perfil foi atualizado"
             );
-
             navigation.goBack();
+
+            // Alert.alert("Erro no cadastro", message);
          } catch (err) {
             if (err instanceof Yup.ValidationError) {
                const errors = getValidationErrors(err);
                formRef.current?.setErrors(errors);
-
-               return;
             }
-            Alert.alert(
-               "Erro no cadastro",
-               "Ocorreu um erro ao tentar fazer o cadastro"
-            );
          }
       },
       [navigation, updateUser]
