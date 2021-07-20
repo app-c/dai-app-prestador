@@ -1,8 +1,10 @@
 import { FlatList } from "react-native";
-import styled from "styled-components/native";
 import { RectButton } from "react-native-gesture-handler";
-import { IResposta, Response } from "./index";
+
+import styled from "styled-components/native";
+
 import { cores } from "../../../utils/ferramentas";
+import { IResposta, Response } from "./index";
 
 interface Props {
    pres: boolean;

@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import React, { useRef, useCallback, useState, useEffect } from "react";
-import { Feather } from "@expo/vector-icons";
 import {
    KeyboardAvoidingView,
    ScrollView,
@@ -8,17 +7,21 @@ import {
    Alert,
    View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Form } from "@unform/mobile";
-import { FormHandles } from "@unform/core";
-import * as Yup from "yup";
+
 import * as ImagePicker from "expo-image-picker";
-import Input from "../../components/Input";
+
+import { Feather } from "@expo/vector-icons";
+
+import { useNavigation } from "@react-navigation/native";
+import { FormHandles } from "@unform/core";
+import { Form } from "@unform/mobile";
+import * as Yup from "yup";
+
 import Button from "../../components/Button";
+import Input from "../../components/Input";
+import { useAuth } from "../../hooks/AuthContext";
 import { api } from "../../services/api";
 import getValidationErrors from "../../utils/getValidationsErrors";
-import { useAuth } from "../../hooks/AuthContext";
-
 import {
    Container,
    UserAvatarButtom,
@@ -47,7 +50,6 @@ const Profile: React.FC = () => {
    const [avatar, setAvatar] = useState("");
 
    const { prestador, signOut, updateUser } = useAuth();
-   console.log(prestador.avatar);
 
    const logOf = useCallback(() => {
       signOut();
@@ -67,7 +69,7 @@ const Profile: React.FC = () => {
                email: Yup.string()
                   .required("emal obrigatorio")
                   .email("digite um email valido"),
-               telefone: Yup.number()
+               telefone: Yup.string()
                   .required()
                   .min(11, "digite um telefone valido"),
                work_init: Yup.string().required(),
@@ -118,27 +120,25 @@ const Profile: React.FC = () => {
                   : {}),
             };
 
-            const response = await api.put("/profile", formData);
+            const response = await api.put("/prestador/update", formData);
 
             updateUser(response.data);
-
-            Alert.alert(
-               "Perfil atualizado com sucesso",
-               "seu perfil foi atualizado"
-            );
+            const { message } = response.data;
+            if (!message) {
+               Alert.alert(
+                  "Perfil atualizado com sucesso",
+                  "seu perfil foi atualizado"
+               );
+            } else {
+               Alert.alert("Erro no cadastro", message);
+            }
 
             navigation.goBack();
          } catch (err) {
             if (err instanceof Yup.ValidationError) {
                const errors = getValidationErrors(err);
                formRef.current?.setErrors(errors);
-
-               return;
             }
-            Alert.alert(
-               "Erro no cadastro",
-               "Ocorreu um erro ao tentar fazer o cadastro"
-            );
          }
       },
       [navigation, updateUser]

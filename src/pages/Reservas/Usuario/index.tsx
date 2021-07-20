@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable camelcase */
 import React, { useCallback, useState, useMemo, useEffect } from "react";
-
 import { Alert, RefreshControl, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { useNavigation } from "@react-navigation/core";
-import { ScrollView } from "react-native-gesture-handler";
+
 import Button from "../../../components/Button";
 import { api } from "../../../services/api";
-
 import {
    Container,
    ContainerAvatar,
@@ -161,9 +160,6 @@ const ReservaCliente: React.FC = () => {
             >
                <ServiceContainer
                   horizontal
-                  contentContainerStyle={{
-                     width: "100%",
-                  }}
                   data={service}
                   keyExtractor={(service) => service.id}
                   renderItem={({ item: service }) => (

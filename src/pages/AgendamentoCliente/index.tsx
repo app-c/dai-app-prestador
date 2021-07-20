@@ -1,12 +1,17 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useRoute, useNavigation } from "@react-navigation/core";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import Picker from "@react-native-community/datetimepicker";
-import { getDate, getMonth, getYear } from "date-fns";
-import { Alert } from "react-native";
-import Button from "../../components/Button";
 
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { Alert } from "react-native";
+
+import Picker from "@react-native-community/datetimepicker";
+import { useRoute, useNavigation } from "@react-navigation/core";
+import { getDate, getMonth, getYear } from "date-fns";
+
+import Button from "../../components/Button";
+import { useAuth } from "../../hooks/AuthContext";
+import { api } from "../../services/api";
+import { convertHours } from "../utils";
 import {
    Container,
    ContainerCalendario,
@@ -17,9 +22,6 @@ import {
    SectionContente,
    Title,
 } from "./styles";
-import { api } from "../../services/api";
-import { useAuth } from "../../hooks/AuthContext";
-import { convertHours } from "../utils";
 
 interface RouteParams {
    service: string;

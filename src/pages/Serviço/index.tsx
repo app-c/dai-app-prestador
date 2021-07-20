@@ -1,19 +1,23 @@
-import AppLoading from "expo-app-loading";
 import React, { useCallback, useRef } from "react";
 import { Alert, Image, RefreshControl } from "react-native";
+
+import AppLoading from "expo-app-loading";
+
 import { Feather } from "@expo/vector-icons";
+
 import { useNavigation } from "@react-navigation/core";
-import { Form } from "@unform/mobile";
 import { FormHandles } from "@unform/core";
+import { Form } from "@unform/mobile";
 import * as Yup from "yup";
+
+import Logo from "../../assets/Logo.png";
+import Button from "../../componentesServiço/Button";
+import Input from "../../componentesServiço/Input";
+import { useAuth } from "../../hooks/AuthContext";
 import { api } from "../../services/api";
+import getValidationErrors from "../../utils/getValidationsErrors";
 import { Fonts } from "../utils";
 import { Container, TextTitle } from "./styles";
-import Logo from "../../assets/Logo.png";
-import Input from "../../componentesServiço/Input";
-import Button from "../../componentesServiço/Button";
-import getValidationErrors from "../../utils/getValidationsErrors";
-import { useAuth } from "../../hooks/AuthContext";
 
 interface IData {
    provider_id: string;

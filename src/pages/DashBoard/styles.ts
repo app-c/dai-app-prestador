@@ -1,5 +1,10 @@
-import styled from "styled-components/native";
+import { FlatList } from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
+
+import styled from "styled-components/native";
+
+import { Response } from "./index";
 
 export const Container = styled(LinearGradient)`
    flex: 1;
@@ -87,12 +92,13 @@ export const TextName = styled.Text`
    margin-left: 20%;
 `;
 
-export const ContainerText = styled.View``;
+export const ContainerText = styled.View`
+   width: 70%;
+`;
 
 export const TextService = styled.Text`
    font-size: 14px;
-   margin-left: 15px;
-   margin-top: 10px;
+   margin-left: 10px;
 `;
 
 export const FootContainer = styled.View`
@@ -118,9 +124,8 @@ export const Descript = styled.Text`
 export const BoxSecond = styled.View`
    margin-top: 10px;
    flex-direction: row;
-   height: 70px;
    align-items: center;
-   margin-top: 25px;
+   justify-content: flex-start;
 `;
 
 export const AvatarImag = styled.Image`
@@ -128,7 +133,7 @@ export const AvatarImag = styled.Image`
    width: 53px;
    border-radius: 40px;
    background: #d0d0d0;
-   margin-left: 20px;
+   margin-left: 15px;
 `;
 
 export const BoxText = styled.View`
@@ -136,18 +141,26 @@ export const BoxText = styled.View`
    flex-direction: row;
    align-items: center;
    border-radius: 12px;
-   margin-left: 10%;
-   height: 70px;
-   max-width: 70%;
-   padding-right: 5px;
+   padding-right: 15px;
+   width: 73%;
 `;
 
-export const BoxTextElements = styled.View``;
+export const BoxTextElements = styled.View`
+   width: 70%;
+`;
 
 export const SemAgendamentoContainer = styled.View`
    align-items: center;
    margin-top: 70px;
 `;
 export const ContainerAgenda = styled.View`
-   flex: 1;
+   padding: 4px 10px;
+   align-items: center;
+   justify-content: center;
+`;
+
+export const ContainerFlatList = styled(
+   FlatList as new () => FlatList<Response>
+)`
+   margin-top: 20px;
 `;

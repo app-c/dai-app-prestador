@@ -23,9 +23,25 @@
         "react",
         "react-hooks",
         "@typescript-eslint",
-        "prettier"
+        "prettier",
+        "import-helpers"
     ],
     "rules": {
+       "import-helpers/order-imports": [
+          "warn",
+          {
+             "newlinesBetween": "always",
+             "groups": [
+                "/^react/",
+                "/^react-native/",
+                 "/^expo/",
+                  "/^@expo/",
+                "module",
+                ["parent", "sibling", "index"]
+             ],
+             "alphabetize": { "order": "asc", "ignoreCase": true}
+          }
+       ],
         "no-duplicate-imports": "off",
         "no-shadow": "off",
     

@@ -1,12 +1,18 @@
-import AppLoading from "expo-app-loading";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Form } from "@unform/mobile";
+
+import AppLoading from "expo-app-loading";
+
+import { useNavigation } from "@react-navigation/core";
 import { FormHandles } from "@unform/core";
+import { Form } from "@unform/mobile";
 import * as Yup from "yup";
-import { withRepeat } from "react-native-reanimated";
+
+import Button from "../../componentesServiço/Button";
+import Input from "../../componentesServiço/Input";
+import { useAuth } from "../../hooks/AuthContext";
 import { api } from "../../services/api";
+import getValidationErrors from "../../utils/getValidationsErrors";
 import { Fonts } from "../utils";
 import {
    Box,
@@ -22,12 +28,7 @@ import {
    TextElementos,
    TextTitle,
    BoxEditToutB,
-   Caixa,
 } from "./styles";
-import Input from "../../componentesServiço/Input";
-import Button from "../../componentesServiço/Button";
-import getValidationErrors from "../../utils/getValidationsErrors";
-import { useAuth } from "../../hooks/AuthContext";
 
 export interface IData {
    id: string;
@@ -50,6 +51,8 @@ const UpdateService: React.FC = () => {
    const [value, setValue] = useState<number>();
    const [serviceId, setServiceId] = useState("");
    const [refleshing, setReflesh] = useState(false);
+
+   console.log(serviceId);
 
    const handleUpdate = useCallback(
       (
@@ -91,8 +94,8 @@ const UpdateService: React.FC = () => {
                value: data.value,
             });
 
-            const { message, statusCode } = res.data;
-            if (!message || !statusCode) {
+            const { message } = res.data;
+            if (!message) {
                Alert.alert("Serviço atualizado com sucesso");
                navigate("Home");
             } else {
@@ -115,20 +118,22 @@ const UpdateService: React.FC = () => {
       [navigate, prestador.id, serviceId]
    );
 
-   function wait(timeout: any) {
-      return new Promise((resolve) => {
-         setTimeout(resolve, timeout);
-      });
-   }
-
    const onRefresh = useCallback(() => {
-      wait(2000).then(() => {
+      function wait(timeout: any) {
+         return new Promise((resolve) => {
+            setTimeout(resolve, timeout);
+         });
+      }
+
+      wait(1000).then(() => {
+         setServiceId("");
+         setUdate(false);
          setReflesh(false);
          api.get(`service/${prestador.id}/list`).then((res) =>
             setResponse(res.data)
          );
       });
-   }, [prestador.id, refleshing]);
+   }, [prestador.id]);
 
    useEffect(() => {
       api.get(`service/${prestador.id}/list`).then((res) =>

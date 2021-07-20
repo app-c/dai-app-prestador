@@ -1,6 +1,8 @@
 import { FlatList } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
+
 import styled from "styled-components/native";
+
 import { cores } from "../../utils/ferramentas";
 
 interface HourProps {

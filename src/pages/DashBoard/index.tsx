@@ -3,13 +3,16 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-expressions */
-import { useNavigation } from "@react-navigation/core";
-import AppLoading from "expo-app-loading";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { RefreshControl, ScrollView, Text } from "react-native";
-import prBr, { format, getDate, isToday } from "date-fns";
 
 import { Feather } from "@expo/vector-icons";
+
+import { useNavigation } from "@react-navigation/core";
+import prBr, { format, getDate, isToday } from "date-fns";
+
+import { useAuth } from "../../hooks/AuthContext";
+import { api, socket } from "../../services/api";
 import {
    AvatarContainer,
    AvatarImage,
@@ -32,10 +35,8 @@ import {
    BoxText,
    ContainerAgenda,
    BoxTextElements,
+   ContainerFlatList,
 } from "./styles";
-import { Fonts } from "../utils";
-import { api, socket } from "../../services/api";
-import { useAuth } from "../../hooks/AuthContext";
 
 export interface Request {
    ano: number;
@@ -129,6 +130,13 @@ const DashBoard: React.FC = () => {
       });
    }, []);
 
+   function formated(ano: number, mes: number, dia: number, min: number) {
+      const date = new Date(ano, mes, dia, 0, min);
+      const horaFormated = format(date, "HH:mm");
+      const dataFormated = format(date, "dd/MM");
+      return { horaFormated, dataFormated };
+   }
+
    const urlAvatar = "https://dai-nails.s3.us-east-2.amazonaws.com/";
 
    return (
@@ -170,6 +178,7 @@ const DashBoard: React.FC = () => {
                <DateText style={{ fontFamily: "MontRegular" }}>
                   {dataFormat}
                </DateText>
+
                <NextAppointment style={{ fontFamily: "MontBold" }}>
                   Proximo Atendimento
                </NextAppointment>
@@ -186,6 +195,7 @@ const DashBoard: React.FC = () => {
                            }}
                         />
                      </AvatarContainer>
+
                      <ContainerText>
                         <TextName style={{ fontFamily: "MontBold" }}>
                            {nextAgendamento.user.nome}
@@ -208,74 +218,86 @@ const DashBoard: React.FC = () => {
                         </TextService>
                         <TextService style={{ fontFamily: "MontRegular" }}>
                            {" "}
-                           <Feather name="clipboard" size={20} /> Serviço:{" "}
+                           <Feather name="clipboard" size={20} />
+                           {"  "}
                            {nextAgendamento.service}
                         </TextService>
                      </ContainerText>
                   </BoxFirst>
                )}
-               <ScrollView>
-                  {afterAgendamento.map((agenda) => (
-                     <BoxSecond key={agenda.id}>
+
+               <ContainerFlatList
+                  contentContainerStyle={{
+                     paddingBottom: 20,
+                     paddingLeft: 5,
+                     paddingRight: 5,
+                  }}
+                  data={afterAgendamento}
+                  keyExtractor={(h) => h.id}
+                  renderItem={({ item: h }) => (
+                     <BoxSecond>
                         <Feather name="clock" size={25} />
                         <ContainerAgenda>
-                           <TextService style={{ fontFamily: "MontBold" }}>
-                              {format(
-                                 new Date(
-                                    agenda.ano,
-                                    agenda.mes,
-                                    agenda.dia,
-                                    0,
-                                    agenda.from,
-                                    0
-                                 ),
-                                 "HH:mm"
-                              )}
+                           <TextService>
+                              {
+                                 formated(h.ano, h.mes, h.dia, h.from)
+                                    .horaFormated
+                              }
                            </TextService>
-                           <TextService style={{ fontFamily: "MontBold" }}>
-                              {format(
-                                 new Date(
-                                    agenda.ano,
-                                    agenda.mes,
-                                    agenda.dia,
-                                    0,
-                                    agenda.from,
-                                    0
-                                 ),
-                                 "dd/MM"
-                              )}
+
+                           <TextService>
+                              {
+                                 formated(h.ano, h.mes, h.dia, h.from)
+                                    .dataFormated
+                              }
                            </TextService>
                         </ContainerAgenda>
+
                         <BoxText>
                            <AvatarImag
                               source={{
-                                 uri: `${urlAvatar}${agenda.user.avatar}`,
+                                 uri: `${urlAvatar}${h.user.avatar}`,
                               }}
                            />
+
                            <BoxTextElements>
-                              <Text
-                                 style={{
-                                    marginLeft: 30,
-                                    fontSize: 16,
-                                    fontFamily: "MontBold",
-                                 }}
-                              >
-                                 {agenda.user.nome}
-                              </Text>
-                              <Text
-                                 style={{
-                                    marginLeft: 30,
-                                    fontSize: 14,
-                                    fontFamily: "MontBold",
-                                 }}
-                              >
-                                 {agenda.service}
-                              </Text>
+                              <TextName> {h.user.nome} </TextName>
+                              <TextService> {h.service} </TextService>
                            </BoxTextElements>
                         </BoxText>
                      </BoxSecond>
-                  ))}
-               </ScrollView>
+                  )}
+               />
+               {/* {afterAgendamento.map((h) => (
+                     <BoxText>
+                        <AvatarImag
+                           source={{
+                              uri: `${urlAvatar}${agenda.user.avatar}`,
+                           }}
+                        />
+                        <BoxTextElements>
+                           <Text
+                              style={{
+                                 marginLeft: 30,
+                                 fontSize: 16,
+                                 fontFamily: "MontBold",
+                              }}
+                           >
+                              {agenda.user.nome}
+                           </Text>
+                           <Text
+                              style={{
+                                 marginLeft: 30,
+                                 fontSize: 14,
+                                 fontFamily: "MontBold",
+                              }}
+                           >
+                              {agenda.service}
+                           </Text>
+                        </BoxTextElements>
+                     </BoxText>
+                  </BoxSecond>
+               ))} */}
             </ContainerBody>
          </ScrollView>
       </Container>
