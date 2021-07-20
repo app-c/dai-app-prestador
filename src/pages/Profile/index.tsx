@@ -80,14 +80,14 @@ const Profile: React.FC = () => {
                senha: Yup.string()
                   .ensure()
                   .when("old_password", {
-                     is: (val) => !!val.length,
+                     is: (val: string) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   }),
                password_confirmation: Yup.string()
                   .ensure()
                   .when("old_password", {
-                     is: (val) => !!val.length,
+                     is: (val: string) => !!val.length,
                      then: Yup.string().required(),
                      otherwise: Yup.string(),
                   })
@@ -132,8 +132,6 @@ const Profile: React.FC = () => {
             } else {
                Alert.alert("Erro no cadastro", message);
             }
-
-            navigation.goBack();
          } catch (err) {
             if (err instanceof Yup.ValidationError) {
                const errors = getValidationErrors(err);
@@ -141,7 +139,7 @@ const Profile: React.FC = () => {
             }
          }
       },
-      [navigation, updateUser]
+      [updateUser]
    );
 
    useEffect(() => {

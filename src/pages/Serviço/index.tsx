@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useCallback, useRef } from "react";
 import { Alert, Image, RefreshControl } from "react-native";
 
@@ -5,6 +6,12 @@ import AppLoading from "expo-app-loading";
 
 import { Feather } from "@expo/vector-icons";
 
+=======
+/* eslint-disable camelcase */
+import AppLoading from "expo-app-loading";
+import React, { useCallback, useRef } from "react";
+import { Alert, Image } from "react-native";
+>>>>>>> 8f1dc5ec56f9edce1d740e0a284a68b0545c3439
 import { useNavigation } from "@react-navigation/core";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
@@ -56,11 +63,9 @@ const Serviço: React.FC = () => {
                value: data.value,
             });
 
-            console.log(res.data);
-
             const { message } = res.data;
             if (!message) {
-               Alert.alert("Cadastro realiazado com sucesso!");
+               Alert.alert("Serviço cadastrado com sucesso!");
                navigate("Home");
             } else {
                Alert.alert("Erroo", message);
@@ -72,10 +77,10 @@ const Serviço: React.FC = () => {
 
                return;
             }
-            Alert.alert("Erro ao cadastrar um novo serviço", err.message);
+            Alert.alert("Erro ao cadastrar um novo serviço");
          }
       },
-      [navigate]
+      [navigate, prestador.id]
    );
 
    if (!fontsL) {

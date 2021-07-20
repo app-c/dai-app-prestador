@@ -12,16 +12,30 @@ const Reservas: React.FC = () => {
    }, [navigate]);
 
    const handleNavigateB = useCallback(() => {
+<<<<<<< HEAD
       navigate("ReservaCliente");
    }, [navigate]);
 
    const handleNavigateC = useCallback(() => {
       navigate("reserva diaria");
+=======
+      navigate("Bloqueio");
+>>>>>>> 8f1dc5ec56f9edce1d740e0a284a68b0545c3439
    }, [navigate]);
+
+   const handleNavigateC = useCallback(() => {
+      navigate("Reserva mensal");
+   }, []);
 
    return (
       <Container>
          <ContainerCards>
+<<<<<<< HEAD
+=======
+            <Cards onPress={handleNavigateB}>
+               <TextTitle>Reservar um horário</TextTitle>
+            </Cards>
+>>>>>>> 8f1dc5ec56f9edce1d740e0a284a68b0545c3439
             <Cards onPress={handleNavigateA}>
                <TextTitle>Reservar um horário para um dia específico</TextTitle>
             </Cards>
