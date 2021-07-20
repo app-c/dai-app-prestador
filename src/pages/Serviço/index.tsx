@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useCallback, useRef } from "react";
 import { Alert, Image, RefreshControl } from "react-native";
 
@@ -6,12 +5,6 @@ import AppLoading from "expo-app-loading";
 
 import { Feather } from "@expo/vector-icons";
 
-=======
-/* eslint-disable camelcase */
-import AppLoading from "expo-app-loading";
-import React, { useCallback, useRef } from "react";
-import { Alert, Image } from "react-native";
->>>>>>> 8f1dc5ec56f9edce1d740e0a284a68b0545c3439
 import { useNavigation } from "@react-navigation/core";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/mobile";
