@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import styled from "styled-components/native";
 
-import { Response } from "./index";
+import { cores } from "../../utils/ferramentas";
+import { Request } from "./index";
 
 export const Container = styled(LinearGradient)`
    flex: 1;
@@ -42,6 +43,27 @@ export const UserName = styled.Text`
 `;
 
 export const ProfileButton = styled.TouchableOpacity``;
+
+export const ContainerAvatar = styled.View`
+   flex-direction: row;
+   align-items: center;
+   /* background-color: red; */
+   padding: 30px;
+`;
+
+export const ContainerMail = styled.TouchableOpacity`
+   margin-right: 10px;
+`;
+
+export const Recivid = styled.View`
+   width: 20;
+   height: 20;
+   background-color: ${cores.branco};
+   align-items: center;
+   justify-content: center;
+   margin-bottom: -5px;
+   border-radius: 10px;
+`;
 
 export const UserAvatar = styled.Image`
    width: 66px;
@@ -160,7 +182,7 @@ export const ContainerAgenda = styled.View`
 `;
 
 export const ContainerFlatList = styled(
-   FlatList as new () => FlatList<Response>
+   FlatList as new () => FlatList<Request>
 )`
    margin-top: 20px;
 `;

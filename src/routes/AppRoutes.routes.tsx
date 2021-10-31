@@ -1,8 +1,12 @@
 import React from "react";
+
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import DashBoard from "../pages/DashBoard";
-import Profile from "../pages/Profile";
+
+import { Mail } from "../components/Listas/Mails";
 import Agenda from "../pages/Agenda";
+import DashBoard from "../pages/DashBoard";
+import { Message } from "../pages/Message";
+import Profile from "../pages/Profile";
 import Serviço from "../pages/Serviço";
 import UpdateService from "../pages/UpadeService";
 import AppService from "./AppServices.routes";
@@ -19,6 +23,7 @@ const AppRoutes: React.FC = () => {
             <Drawer.Screen name="Serviço" component={Serviço} />
             <Drawer.Screen name="Atualizar serviço" component={UpdateService} />
             <Drawer.Screen name="Reserva de horários" component={AppService} />
+            <Drawer.Screen name="message" component={Message} />
          </Drawer.Navigator>
       </>
    );

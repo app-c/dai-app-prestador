@@ -1,5 +1,8 @@
 import React from "react";
+
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import SingIn from "../pages/SingIn";
 import SingUp from "../pages/SingUp";
 

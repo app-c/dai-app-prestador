@@ -1,13 +1,18 @@
+/* eslint-disable react/style-prop-object */
 import "react-native-gesture-handler";
-import { StatusBar } from "expo-status-bar";
+
 import React, { useEffect } from "react";
 import { View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import * as Updates from "expo-updates";
+
 import AppLoading from "expo-app-loading";
+import { StatusBar } from "expo-status-bar";
+import * as Updates from "expo-updates";
+
+import { NavigationContainer } from "@react-navigation/native";
+
 import AppProvider from "./hooks";
-import Routes from "./routes";
 import { Fonts } from "./pages/utils";
+import Routes from "./routes";
 
 const App: React.FC = () => {
    // useEffect(() => {

@@ -1,3 +1,7 @@
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
+/* eslint-disable block-scoped-var */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable array-callback-return */
@@ -6,13 +10,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { RefreshControl, ScrollView, Text } from "react-native";
 
-import { Feather } from "@expo/vector-icons";
+import * as Notification from "expo-notifications";
+import { hide } from "expo-splash-screen";
+
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/core";
-import prBr, { format, getDate, isToday } from "date-fns";
+import prBr, { format, getDate, getHours, isToday } from "date-fns";
+import { ConsoleWriter } from "istanbul-lib-report";
 
 import { useAuth } from "../../hooks/AuthContext";
 import { api, socket } from "../../services/api";
+import { convertHours } from "../utils";
 import {
    AvatarContainer,
    AvatarImage,
@@ -36,6 +45,9 @@ import {
    ContainerAgenda,
    BoxTextElements,
    ContainerFlatList,
+   ContainerAvatar,
+   ContainerMail,
+   Recivid,
 } from "./styles";
 
 export interface Request {
@@ -52,15 +64,12 @@ export interface Request {
 }
 
 export interface Response {
-   ano: number;
-   mes: number;
-   dia: number;
    from: number;
-   service: string;
-   id: string;
-   user: {
-      nome: string;
-      avatar: string;
+}
+
+interface Message {
+   message: {
+      content: string;
    };
 }
 
@@ -70,17 +79,72 @@ const DashBoard: React.FC = () => {
    const { prestador } = useAuth();
    const { navigate } = useNavigation();
 
-   const [appointment, setAppoitment] = useState<Response[]>([]);
-   const [agendas, seAgendas] = useState<any[]>([]);
+   const [appointment, setAppoitment] = useState<Request[]>([]);
+   const [agendas, seAgendas] = useState<Response[]>([{ from: 0 }]);
    const [refleshing, setReflesh] = useState(false);
+   const [recived, setRecived] = useState(0);
+   const [message, setMessage] = useState<any[]>([]);
+
+   const handleMessage = useCallback(() => {
+      setRecived(0);
+      navigate("message");
+   }, [navigate]);
+
+   // const horformated = useMemo(() => {
+   //    const age = appointment.map((h) => {
+   //       return h.from;
+   //    });
+   //    const leng = age.length - 1;
+   //    const hora = age[leng];
+   //    const date = new Date(2021, 1, 1, 0, hora, 0);
+   //    var form = format(date, "HH:mm", { locale: prBr });
+
+   //    return form;
+   // }, [appointment]);
+
+   const mess = useCallback(() => {
+      setRecived(recived + 1);
+      return setMessage;
+   }, [recived]);
+
+   const notifica = useCallback(() => {
+      Notification.setNotificationHandler({
+         handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false,
+         }),
+      });
+
+      function wait(timeout: any) {
+         return new Promise((resolve) => {
+            setTimeout(resolve, timeout);
+         });
+      }
+
+      async function not() {
+         const notifica = await Notification.scheduleNotificationAsync({
+            content: {
+               title: "Meu agendamento",
+               body: `Você tem um novo agendamento   `,
+               sound: true,
+               priority: Notification.AndroidNotificationPriority.HIGH,
+            },
+            trigger: { seconds: 3 },
+         });
+         return notifica;
+      }
+      mess();
+      not();
+   }, [mess, appointment]);
 
    const navigateToProfile = useCallback(() => {
       navigate("Profile");
    }, [navigate]);
 
    useEffect(() => {
-      socket.on("agenda", (newAgenda: Response) => {
-         seAgendas([newAgenda, ...agendas]);
+      socket.on("hora", (newAgenda: Response) => {
+         seAgendas([...agendas, newAgenda]);
       });
 
       socket.on("delet", (del: string) => {
@@ -90,19 +154,23 @@ const DashBoard: React.FC = () => {
 
          setAppoitment(de);
       });
-   }, [agendas, appointment]);
+   }, []);
 
    useEffect(() => {
-      agendas;
       api.get("/agendamento/me/prestador").then((res) =>
          setAppoitment(res.data)
       );
+      notifica();
    }, [agendas]);
 
    const nextAgendamento = useMemo(() => {
       return appointment.find((ap) => {
          const dia = getDate(new Date(Date.now()));
-         if (ap.dia === dia) {
+         const horaN = new Date(Date.now());
+         const horformated = format(horaN, "HH:mm");
+         const convetH = convertHours(horformated);
+         const hora = new Date(0, 0, 0, 0, ap.from, 0).getHours();
+         if (ap.dia === dia && ap.from >= convetH) {
             return ap;
          }
       });
@@ -110,8 +178,13 @@ const DashBoard: React.FC = () => {
 
    const afterAgendamento = useMemo(() => {
       return appointment.filter((h) => {
+         const horaN = new Date(Date.now());
+         const horformated = format(horaN, "HH:mm");
+         const convetH = convertHours(horformated);
          const dataNow = getDate(new Date(Date.now()));
-         return h.dia >= dataNow;
+         if (h.dia >= dataNow) {
+            return h;
+         }
       });
    }, [appointment]);
 
@@ -160,11 +233,19 @@ const DashBoard: React.FC = () => {
                </HeaderTitle>
 
                <ProfileButton onPress={navigateToProfile}>
-                  <UserAvatar
-                     source={{
-                        uri: `${urlAvatar}${prestador.avatar}`,
-                     }}
-                  />
+                  <ContainerAvatar>
+                     <ContainerMail onPress={handleMessage}>
+                        <Recivid>
+                           <Text>{recived}</Text>
+                        </Recivid>
+                        <Ionicons name="mail-outline" size={30} />
+                     </ContainerMail>
+                     <UserAvatar
+                        source={{
+                           uri: `${urlAvatar}${prestador.avatar}`,
+                        }}
+                     />
+                  </ContainerAvatar>
                </ProfileButton>
             </Linear>
          </Header>
